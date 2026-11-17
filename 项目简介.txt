@@ -1,0 +1,24 @@
+## EvoAgent 项目简介
+
+**EvoAgent** 是一个面向研发过程中 Pull Request 的**自进化 Harness 风险治理与安全修复 Agent**，核心能力与架构如下：
+
+### 核心功能
+- 接收 PR Diff，分析变更可能引入的**安全、可靠性、正确性和回归风险**
+- 复核问题证据，并对部分规则生成**保守修复**
+- 整个过程不是单次模型调用，而是一条可**恢复、重试、追踪和评测**的 Agent 执行链路
+
+### 自研 Agent Runtime
+- 负责节点调度、执行预算、超时、重试、任务取消
+- 支持 **Checkpoint、断点续跑**和 Run Trace
+- 任务中途失败后可从最近完成的节点恢复，无需重跑整个审查流程
+
+### 工程化与生产能力
+- **PR 侧**：Webhook、评论 Upsert、独立修复分支
+- **消息侧**：Redis Streams 消费、Worker 租约、ACK、失败重试、死信队列
+- **生产侧**：RBAC、多租户隔离、OpenTelemetry、Prometheus、灰度发布、影子流量
+
+### 评测体系
+- 基于 **100 个受控 PR Diff** 构建 Evaluation Harness
+- 按仓库划分 **Validation 和 Holdout**
+- 通过文件路径、行号区间和 CWE 类型进行**一对一匹配**
+- 用于验证风险检测效果，以及判断新的 Prompt 或 Skill 版本是否可上线
